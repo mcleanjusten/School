@@ -1,0 +1,149 @@
+#include <cassert>
+#include <cstdlib>
+#include <iostream>
+#include <iomanip>
+
+/*
+ *   parent index is p, children are at indices 2*p+1 and 2*p+2
+ *      You must check that those are in range
+ *
+ *   child index is c, parent index is (c-1)/2  (integer division)
+ */
+
+
+/**
+* Inserts the 'value' into the heap.
+*
+* Precondition: heap is not full
+*/
+template <class T>
+void heap<T>::insert(const T& value) {
+    assert(!is_full());
+
+    //std::cout << size << std::endl;
+
+    // add the value to a new node in proper position
+    data[size] = value;
+    size++;
+
+    // move the value up the tree as needed
+    int child = size-1;  // index of the new 'node'
+    int parent = (child-1)/2;  // index of the parent
+
+    while((child > 0) && (data[parent] < data[child])) {
+        // swap parent and child values
+        T tmp = data[parent];
+        data[parent] = data[child];
+        data[child] = tmp;
+        // update parent and child
+        child = parent; // this is where new value is!
+        parent = (child-1)/2;
+    }
+
+    // it's a heap!
+
+}
+
+/**
+   * Remove the largest value from this heap and return it.
+   *
+   * Precondition: heap is not empty.
+   */
+template <class T>
+T heap<T>::remove() {
+    assert(!is_empty());
+
+    //  grab first element, save it for return later
+    T save = data[0];
+
+    // copy last value in list to the beginning
+    // decrement size
+    data[0] = data[size-1];
+    size--;
+
+//    size--;
+//    data[0] = data[size];
+
+    // sift the new first element down until it finds its place
+    int parent = 0;
+    int left_child = 2*parent+1;
+    int right_child = 2*parent+2;
+    bool still_working = true;
+
+    while(still_working && left_child < size) {  // while the parent has at least one child
+        if(right_child >= size) {
+            // only the left child to worry about
+            if(data[parent] < data[left_child]) {
+                // out of order, so swap them
+                T t = data[parent];
+                data[parent] = data[left_child];
+                data[left_child] = t;
+                parent = left_child;
+                still_working = false;  // we must be done!
+            } else {
+                still_working = false;
+            }
+        } else {
+            // two children
+            if(data[left_child] > data[right_child]) {
+                //left child larger
+                if(data[parent] < data[left_child]) {
+                    // out of order, so swap them
+                    T t = data[parent];
+                    data[parent] = data[left_child];
+                    data[left_child] = t;
+                    parent = left_child;
+                } else {
+                    still_working = false;
+                }
+            } else {
+                // right child larger
+                if(data[parent] < data[right_child]) {
+                    // out of order, so swap them
+                    T t = data[parent];
+                    data[parent] = data[right_child];
+                    data[right_child] = t;
+                    parent = right_child;
+                } else {
+                    still_working = false;
+                }
+            }
+            left_child = 2*parent + 1;
+            right_child = 2*parent + 2;
+        }
+    }
+
+    return save;
+}
+
+/**
+    * Check if the heap is valid.
+    * Prints out each parent and its children (for all nodes with children)
+    * Stops when a parent is less than one or both of its children
+    * Prints 'check' for each parent that is greater than or equal to its children
+    */
+template <class T>
+bool heap<T>::check_heap() {
+    for(int p = 0; p < size; p++ ) {
+        int cl = 2*p+1;
+        int cr = 2*p+2;
+        std::cout << std::setw(5) << p  << std::setw(10) << data[p];
+        if(cl < size) {  // p has a left child?
+            std::cout << std::setw(10) << data[cl];
+            if(data[p] < data[cl]) {
+                std:exit(1);
+            }
+        }
+        if(cr < size) {  // p has a right child?
+            std::cout << std::setw(10) << data[cr];
+            if(data[p] < data[cr])
+                std::exit(1);
+        }
+        std::cout << std::endl;
+    }
+    return true;
+}
+
+
+
+

@@ -1,0 +1,37 @@
+#include <cassert>
+
+/**
+    * Remove the largest value from this priority queue and return it.
+    *
+    * Precondition: priority queue is not empty.
+    */
+template <class T>
+T priority_queue_simple<T>::remove() {
+    assert(size > 0);
+    int imax = 0;
+    for(int i = 1; i < size; i++ ) {
+        if(data[i] > data[imax])
+            imax = i;
+    }
+    T tmp = data[imax];
+    data[imax] = data[size-1];
+    size--;
+    return tmp;
+}
+
+/**
+ * Inserts the 'value' into the priority queue.
+ *
+ * Precondition: priority queue is not full
+ */
+template <class T>
+void  priority_queue_simple<T>::insert(const T& value) {
+    assert(size < CAPACITY);
+    size++;
+    data[size-1] = value;
+}
+
+
+
+
+

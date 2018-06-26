@@ -1,0 +1,48 @@
+
+#include <cassert>
+#include <cstdlib>
+#include <iostream>
+#include <iomanip>
+
+/*
+ *   parent index is p, children are at indices 2*p+1 and 2*p+2
+ *      You must check that those are in range
+ *
+ *   child index is c, parent index is (c-1)/2  (integer division)
+ */
+
+
+/**
+* Inserts the 'value' into the heap.
+*
+* Precondition: heap is not full
+*/
+template <class T>
+void priority_queue_heap<T>::insert(const T& value) {
+    assert(!m_heap.is_full());
+
+    //Insert the value into the heap
+    m_heap.insert(value);
+    
+}
+
+/**
+   * Remove the largest value from this heap and return it.
+   *
+   * Precondition: heap is not empty.
+   */
+template <class T>
+T priority_queue_heap<T>::remove() {
+    assert(!is_empty());
+
+    T varT;
+    varT = m_heap.remove();
+
+    return varT;
+}
+
+
+
+
+
+
